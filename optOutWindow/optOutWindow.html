@@ -1,0 +1,36 @@
+<template>
+        <template if:true={showThankYouMessage}>
+            <div class="slds-grid slds-gutters slds-align_absolute-center" style="text-align: center; margin:auto; position:relative; height: 20vh">
+                <h2 style="color: floralwhite;" class="slds-text-heading_large">Thank you for updating your preferences!</h2>
+            </div>
+        </template>
+
+        <template if:false={showThankYouMessage}>
+            <div class="slds-grid slds-gutters slds-align_absolute-center" style="height: 55vh">
+                <div class="slds-form_stacked container" style="position:relative;">
+
+                    <label for="email">Email</label>
+
+
+
+
+                    <input id="email" size={inputLength} style="border-radius: 4px; padding:5px; background-color: #EFEFEF4D; text-align:center; display: inline-block; " type="email" value={contactEmail} disabled />
+
+                    <div if:true={showSpinner}>
+                        <div class="slds-is-relative">
+                            <lightning-spinner alternative-text="Loading" size="large" variant="brand"></lightning-spinner>
+                        </div>
+                    </div>
+
+                    <div style = "padding-top: 50px; "> </div>
+                    <button class="btn" style ="border-radius: 4px; text-transform: uppercase;" onclick={handleOptOutClick}>Opt out from communications</button>
+
+                    <div style = "padding-top: 50px; "> </div>
+                    <button class="btn" style ="border-radius: 4px; text-transform: uppercase;" onclick={handleOptInClick}>Opt in to communications</button>
+
+
+
+                </div>
+            </div>
+        </template>
+</template>
