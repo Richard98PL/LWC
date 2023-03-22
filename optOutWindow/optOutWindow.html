@@ -1,14 +1,16 @@
 <template>
     <div if:false={contactEmail}>
-        <div style = "padding-top: 25vh; "> </div>
+        <div style = "padding-top: 35vh; "> </div>
         <div class="slds-is-relative">
             <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
         </div>
     </div>
 
     <template if:true={contactEmail}>
+        <div style = "padding-top: 10vh; "> </div>
+
         <template if:true={showThankYouMessage}>
-            <div class="slds-grid slds-gutters slds-align_absolute-center" style="text-align: center; margin:auto; position:relative; height: 20vh">
+            <div class="slds-grid slds-gutters slds-align_absolute-center" style="text-align: center; margin:auto; position:relative; height: 35vh">
                 <h2 style="color: floralwhite;" class="slds-text-heading_large">Thank you for updating your preferences!</h2>
             </div>
         </template>
