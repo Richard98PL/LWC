@@ -2,13 +2,34 @@ public without sharing class OptOutController {
     @AuraEnabled
     public static String getEmailByCid(String cid, String ip, String device, String language) {
         createMarketingActivityLog('subscription_page_visit', cid, ip, device, language);
+        createLogEvent('Subscription Page Visit', cid);
         return getEmailByCidWithoutInsertingLog(cid);
+    }
+
+    private static void createLogEvent(String title, String cid) {
+        List<SObject> sobjects = new List<SObject>();
+        sobjects.addAll([SELECT Id FROM Lead WHERE IsConverted = FALSE AND cid__c != NULL AND cid__c = :cid]);
+        sobjects.addAll([SELECT Id FROM Contact WHERE cid__c != NULL AND cid__c = :cid]);
+
+        List<Event> events = new List<Event>();
+        for(SObject record : sobjects){
+            Event event = new Event();
+            event.Subject = title;
+            event.Description = 'cid: ' + cid;
+            event.WhoId = record.Id;
+            event.WhatId = null; // Set to null if you don't have a related record
+            event.ActivityDateTime = System.now();
+            event.DurationInMinutes = 1;
+            events.add(event);
+        }
+
+        Database.insert(events, false);
     }
 
     @AuraEnabled
     public static void optOut(String cid, String ip, String device, String language) {
         createMarketingActivityLog('subscription_page_opt_out', cid, ip, device, language);
-
+        createLogEvent('Opt Out', cid);
 
         List<Contact> contacts = [SELECT Id, HasOptedOutOfEmail FROM Contact WHERE cid__c = :cid];
         List<Lead> leads = [SELECT Id, HasOptedOutOfEmail FROM Lead WHERE cid__c = :cid AND IsConverted = FALSE];
@@ -29,6 +50,7 @@ public without sharing class OptOutController {
     @AuraEnabled
     public static void optIn(String cid, String ip, String device, String language) {
         createMarketingActivityLog('subscription_page_opt_in', cid, ip, device, language);
+        createLogEvent('Opt In', cid);
 
         List<Contact> contacts = [SELECT Id, HasOptedOutOfEmail FROM Contact WHERE cid__c = :cid];
         List<Lead> leads = [SELECT Id, HasOptedOutOfEmail FROM Lead WHERE cid__c = :cid AND IsConverted = FALSE];
