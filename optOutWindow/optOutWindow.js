@@ -21,14 +21,19 @@ export default class OptOutWindow extends LightningElement {
         const url = 'https://api.ipify.org/';
         Http.open("GET", url);
         Http.send();
+        let alreadyDone = false;
         Http.onreadystatechange=(e)=>{
-            console.log(Http.responseText); // This prints Ip address
             this.ip = Http.responseText;
+            if (currentPageReference && this.ip) {
 
-            if (currentPageReference) {
+                if(alreadyDone == true){
+                    return;
+                }else{
+                    alreadyDone = true;
+                }
+
                 this.cid = currentPageReference.state?.cid;
                 this.cid = decodeURIComponent(this.cid);
-                console.log(this.cid);
                 getContactEmail({cid: this.cid, ip: this.ip, device: this.device, language: this.language})
                     .then((result) => {
                         this.contactEmail = result;
@@ -47,22 +52,18 @@ export default class OptOutWindow extends LightningElement {
         }
         this.showSpinner = true;
 
-        const Http = new XMLHttpRequest();
-        const url = 'https://api.ipify.org/';
-        Http.open("GET", url);
-        Http.send();
-        Http.onreadystatechange=(e)=>{
-            optOut({ cid: this.cid, ip: this.ip, device: this.device, language: this.language})
-                .then(() => {
-                    this.showThankYouMessage = true;
-                })
-                .catch(error => {
-                    // Handle opt-out error
-                })
-                .finally(()=>{
-                    this.showSpinner = false;
-                });
-        }
+
+        optOut({ cid: this.cid, ip: this.ip, device: this.device, language: this.language})
+            .then(() => {
+                this.showThankYouMessage = true;
+            })
+            .catch(error => {
+                // Handle opt-out error
+            })
+            .finally(()=>{
+                this.showSpinner = false;
+            });
+
     }
 
     handleOptInClick() {
@@ -71,21 +72,17 @@ export default class OptOutWindow extends LightningElement {
         }
         this.showSpinner = true;
 
-        const Http = new XMLHttpRequest();
-        const url = 'https://api.ipify.org/';
-        Http.open("GET", url);
-        Http.send();
-        Http.onreadystatechange=(e)=>{
-            optIn({ cid: this.cid, ip: this.ip, device: this.device, language: this.language})
-                .then(() => {
-                    this.showThankYouMessage = true;
-                })
-                .catch(error => {
-                    // Handle opt-out error
-                })
-                .finally(()=>{
-                    this.showSpinner = false;
-                });
-        }
+
+        optIn({ cid: this.cid, ip: this.ip, device: this.device, language: this.language})
+            .then(() => {
+                this.showThankYouMessage = true;
+            })
+            .catch(error => {
+                // Handle opt-out error
+            })
+            .finally(()=>{
+                this.showSpinner = false;
+            });
     }
+
 }
